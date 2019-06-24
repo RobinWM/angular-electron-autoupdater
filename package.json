@@ -1,0 +1,107 @@
+{
+  "name": "angular-electron-autoupdater",
+  "version": "0.0.1",
+  "description": "The automatic update function combining angular with electron",
+  "homepage": "https://github.com/RobinWM/angular-electron-autoupdater",
+  "author": {
+    "name": "Robin.wang",
+    "email": "robin.wang@tech-trans.com"
+  },
+  "keywords": [
+    "angular",
+    "electron",
+    "typescript",
+    "sass"
+  ],
+  "main": "main.js",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "lint": "ng lint",
+    "ng:serve": "ng serve -o",
+    "electron:tsc": "tsc main.ts",
+    "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
+    "electron:local": "npm run build && electron .",
+    "electron:linux": "npm run build && npx electron-builder build --linux",
+    "electron:windows": "ng build && npx electron-builder build --windows",
+    "electron:mac": "npm run build && npx electron-builder build --mac",
+    "electron": "electron ."
+  },
+  "private": true,
+  "build": {
+    "productName": "angular-electron-autoupdater",
+    "appId": "com.electron.angular-electron-autoupdater",
+    "directories": {
+      "output": "app-builds"
+    },
+    "asar": "true",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": false,
+      "createStartMenuShortcut": true,
+      "createDesktopShortcut": true
+    },
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://uat.ttoto.net/heiyi-downloads/autoupdate/"
+      }
+    ]
+  },
+  "dependencies": {
+    "@angular/animations": "~7.2.0",
+    "@angular/common": "~7.2.0",
+    "@angular/compiler": "~7.2.0",
+    "@angular/core": "~7.2.0",
+    "@angular/forms": "~7.2.0",
+    "@angular/platform-browser": "~7.2.0",
+    "@angular/platform-browser-dynamic": "~7.2.0",
+    "@angular/router": "~7.2.0",
+    "core-js": "^2.5.4",
+    "electron-log": "^2.2.15",
+    "electron-updater": "^4.0.0",
+    "rxjs": "~6.3.3",
+    "tslib": "^1.9.0",
+    "zone.js": "~0.8.26"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular/cli": "~7.3.8",
+    "@angular/compiler-cli": "~7.2.0",
+    "@angular/language-service": "~7.2.0",
+    "@types/node": "~8.9.4",
+    "@types/jasmine": "~2.8.8",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/core-js": "0.9.36",
+    "codelyzer": "~4.5.0",
+    "jasmine-core": "~2.99.1",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.0.0",
+    "karma-chrome-launcher": "~2.2.0",
+    "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-jasmine": "~1.1.2",
+    "karma-jasmine-html-reporter": "^0.2.2",
+    "protractor": "~5.4.0",
+    "ts-node": "~3.2.0",
+    "tslint": "~5.11.0",
+    "typescript": "~3.2.2",
+    "electron": "3.0.0",
+    "electron-builder": "^20.41.0",
+    "electron-nsis": "0.0.1-alpha"
+  }
+}
