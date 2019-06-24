@@ -2,7 +2,6 @@
   "name": "angular-electron-autoupdater",
   "version": "0.0.1",
   "description": "The automatic update function combining angular with electron",
-  "homepage": "https://github.com/RobinWM/angular-electron-autoupdater",
   "author": {
     "name": "Robin.wang",
     "email": "robin.wang@tech-trans.com"
@@ -59,7 +58,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://uat.ttoto.net/heiyi-downloads/autoupdate/"
+        "url": ""
       }
     ]
   },
