@@ -58,7 +58,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": ""
+        "url": "http://uat.ttoto.net/heiyi-downloads/autoupdate/"
       }
     ]
   },

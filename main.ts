@@ -69,6 +69,7 @@ function createWindow() {
     app.requestSingleInstanceLock();  // 保证只运行一个electron窗口
     writeLog();
     updateHandle();
+    // checkForUpdate();
     shortcutRegister();
 }
 
@@ -83,35 +84,46 @@ function updateHandle() {
 
     autoUpdater.checkForUpdates();
 
-    autoUpdater.on('error', message=> {
+    // 更新错误
+    autoUpdater.on('error', message => {
         log.error('' + returnData.error.msg);
+        sendUpdateMessage(returnData.error);
     });
 
-    autoUpdater.on('checking-for-update', ()=>{
+    //  检查更新中
+    autoUpdater.on('checking-for-update', () => {
         log.warn('' + returnData.checking.msg);
+        sendUpdateMessage(returnData.checking);
     });
 
-    autoUpdater.on('update-available', (ev, info)=> {
+    //  发现新版本
+    autoUpdater.on('update-available', (ev, info) => {
         log.warn('' + returnData.updateAva.msg);
+        sendUpdateMessage(returnData.updateAva);
     });
 
-    autoUpdater.on('update-not-available', info=> {
+    //  当前为最新版本
+    autoUpdater.on('update-not-available', info => {
         log.warn('' + returnData.updateNotAva.msg);
+        sendUpdateMessage(returnData.updateNotAva);
     });
 
-    autoUpdater.on('download-progress', (progressObj)=> {
-        log.info('' + JSON.stringify(progressObj));
+    // 更新包下载进度时间
+    autoUpdater.on('download-progress', (progressObj) => {
+        log.warn(progressObj);
+        win.webContents.send('downloadProgress', progressObj.percent);
     });
 
-    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate)=> {
+    // 更新包下载完成处理事件
+    autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate) => {
         log.info('A new version has been downloaded. ');
         const dialogOpts = {
-            buttons: ['关闭', '稍后'],
+            buttons: ['關閉', '稍後'],
             title: '版本更新提示',
             message: process.platform === 'win32' ? releaseNotes : releaseName,
-            detail: '新版本已经下载完成，请重新关闭应用程序以安装新版本'
+            detail: '新版本已下載完成，請關閉程式以安裝新版本！'
         };
-        dialog.showMessageBox(dialogOpts, response=> {
+        dialog.showMessageBox(dialogOpts, response => {
             if (response === 0) {
                 autoUpdater.quitAndInstall();
             }
@@ -121,10 +133,12 @@ function updateHandle() {
 
 // 通过main进程发送事件给renderer进程，提示更新信息
 function sendUpdateMessage(text) {
-    win.webContents.send('message', text);
+    win.webContents.on('did-finish-load', () => {
+        win.webContents.send('messages', text.msg);
+    });
 }
 
-/*接收来自渲染进程(angular)的值*/
+/*日志初始化*/
 function writeLog() {
     const date = new Date();
     let month = (date.getMonth() + 1).toString();
@@ -157,3 +171,15 @@ function shortcutRegister() {
         updateHandle();
     });
 }
+
+/*接收渲染进程传过来的值*/
+
+
+/*
+function checkForUpdate() {
+    ipcMain.on('checkForUpdate', (event, data) => {
+        log.info('手動更新检查！');
+        updateHandle();
+    });
+}
+*/

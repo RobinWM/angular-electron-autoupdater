@@ -66,6 +66,7 @@ function createWindow() {
     electron_1.app.requestSingleInstanceLock(); // 保证只运行一个electron窗口
     writeLog();
     updateHandle();
+    // checkForUpdate();
     shortcutRegister();
 }
 /*自动更新处理*/
@@ -77,28 +78,39 @@ function updateHandle() {
         updateNotAva: { status: 0, msg: '您现在使用的版本为最新版本,无需更新!' }
     };
     electron_updater_1.autoUpdater.checkForUpdates();
+    // 更新错误
     electron_updater_1.autoUpdater.on('error', function (message) {
         log.error('' + returnData.error.msg);
+        sendUpdateMessage(returnData.error);
     });
+    //  检查更新中
     electron_updater_1.autoUpdater.on('checking-for-update', function () {
         log.warn('' + returnData.checking.msg);
+        sendUpdateMessage(returnData.checking);
     });
+    //  发现新版本
     electron_updater_1.autoUpdater.on('update-available', function (ev, info) {
         log.warn('' + returnData.updateAva.msg);
+        sendUpdateMessage(returnData.updateAva);
     });
+    //  当前为最新版本
     electron_updater_1.autoUpdater.on('update-not-available', function (info) {
         log.warn('' + returnData.updateNotAva.msg);
+        sendUpdateMessage(returnData.updateNotAva);
     });
+    // 更新包下载进度时间
     electron_updater_1.autoUpdater.on('download-progress', function (progressObj) {
-        log.info('' + JSON.stringify(progressObj));
+        log.warn(progressObj);
+        win.webContents.send('downloadProgress', progressObj.percent);
     });
-    electron_updater_1.autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName) {
+    // 更新包下载完成处理事件
+    electron_updater_1.autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate) {
         log.info('A new version has been downloaded. ');
         var dialogOpts = {
-            buttons: ['关闭', '稍后'],
+            buttons: ['關閉', '稍後'],
             title: '版本更新提示',
             message: process.platform === 'win32' ? releaseNotes : releaseName,
-            detail: '新版本已经下载完成，请重新关闭应用程序以安装新版本'
+            detail: '新版本已下載完成，請關閉程式以安裝新版本！'
         };
         electron_1.dialog.showMessageBox(dialogOpts, function (response) {
             if (response === 0) {
@@ -109,9 +121,11 @@ function updateHandle() {
 }
 // 通过main进程发送事件给renderer进程，提示更新信息
 function sendUpdateMessage(text) {
-    win.webContents.send('message', text);
+    win.webContents.on('did-finish-load', function () {
+        win.webContents.send('messages', text.msg);
+    });
 }
-/*接收来自渲染进程(angular)的值*/
+/*日志初始化*/
 function writeLog() {
     var date = new Date();
     var month = (date.getMonth() + 1).toString();
@@ -142,3 +156,12 @@ function shortcutRegister() {
         updateHandle();
     });
 }
+/*接收渲染进程传过来的值*/
+/*
+function checkForUpdate() {
+    ipcMain.on('checkForUpdate', (event, data) => {
+        log.info('手動更新检查！');
+        updateHandle();
+    });
+}
+*/
