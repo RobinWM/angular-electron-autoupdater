@@ -23,7 +23,7 @@
     "electron:serve": "wait-on http-get://localhost:4200/ && npm run electron:tsc && electron . --serve",
     "electron:local": "npm run build && electron .",
     "electron:linux": "npm run build && npx electron-builder build --linux",
-    "electron:windows": "ng build && npx electron-builder build --windows",
+    "electron:windows": "npx electron-builder build --windows",
     "electron:mac": "npm run build && npx electron-builder build --mac",
     "electron": "electron ."
   },
@@ -35,6 +35,9 @@
       "output": "app-builds"
     },
     "asar": "true",
+    "files": [
+      "**/*"
+    ],
     "win": {
       "target": [
         {
@@ -58,7 +61,7 @@
     "publish": [
       {
         "provider": "generic",
-        "url": "http://uat.ttoto.net/heiyi-downloads/autoupdate/"
+        "url": "http://ttebd.heiyi.com.hk:8087/downloads/heiyi/windows/releases/"
       }
     ]
   },

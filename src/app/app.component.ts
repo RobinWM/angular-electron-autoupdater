@@ -12,6 +12,7 @@ export class AppComponent implements OnChanges {
     messages: string;
 
     constructor() {
+
         if (this.isElectron()) {
             this.ipcRenderer = window.require('electron').ipcRenderer;
             this.ipcRenderer.on('message', (arg, data) => {
