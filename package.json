@@ -102,7 +102,7 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.11.0",
     "typescript": "~3.2.2",
-    "electron": "3.0.0",
+    "electron": "11.5.0",
     "electron-builder": "^20.41.0",
     "electron-nsis": "0.0.1-alpha"
   }
